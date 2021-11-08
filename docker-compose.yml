@@ -1,0 +1,43 @@
+version: '2'
+services:
+  #注册中心
+  #自定义的服务名称
+  eureka:
+    #镜像名称
+    image: eureka
+    #容器名称
+    container_name: eureka
+    hostname: 121.40.203.208
+    build:
+     #dockerfile所在相对路径
+      context: ./happygou-eureka/
+      dockerfile: Dockerfile
+    ports:
+      - "8761:8761"
+  #mysql配置
+  mysql:
+    image: mysql:v5.7
+    container_name:
+      mysql
+    depends_on:
+      - eureka
+    ports:
+      - "3306:3306"
+    volumes:
+    - ./data/mysql:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: changgou
+      MYSQL_USER: sun
+      MYSQL_PASSWORD: sun123
+  redis:
+    image: redis
+    container_name: redis
+    ports:
+    - "6379:6379"
+    depends_on:
+      - eureka
+
+networks:
+  network:
+    driver: bridge
